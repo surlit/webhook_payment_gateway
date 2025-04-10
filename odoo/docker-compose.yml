@@ -1,0 +1,29 @@
+version: '3.3'
+services: 
+  web_payment_gateway:
+    image: odoo:17
+    container_name: web_payment_gateway
+    depends_on:
+      - mydb_payment_gateway
+    ports:
+      - "8003:8069"
+    volumes:
+      - odoo_payment_gateway:/var/lib/odoo 
+      - ./config:/etc/odoo
+      - ./addons/:/mnt/extra-addons
+      - ./filestore:/var/lib/odoo/firestore
+  mydb_payment_gateway:
+    image: postgres:14
+    container_name: mydb_payment_gateway
+    ports:
+      - "5436:5432"
+    environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=surlit
+        - POSTGRES_PASSWORD=123
+        - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_payment_gateway:/var/lib/postgresql/data/pgdata
+volumes:
+  odoo_payment_gateway:
+  postgres_payment_gateway:
